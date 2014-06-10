@@ -37,6 +37,7 @@ public class StreamingData implements WebSocketEventListener {
     protected ErrorListener errorListener;
     protected StreamEventListener streamEventListener;
     protected boolean connected;
+    /**  */
     protected Set<StreamSubscription> unsentSubscriptions = new NonBlockingHashSet<>();
     protected short MAX_TIMEOUT = 320, currentTimeout = 1;
     protected DateTime lastSeen;
@@ -152,8 +153,14 @@ public class StreamingData implements WebSocketEventListener {
         }
     }
 
-    protected synchronized void connect() {
-        if (liveStream == null) {
+    protected void connect() {
+        // test before locking to avoid blocking
+        if (liveStream != null)
+            return;
+        synchronized (this) {
+            // test again with a lock
+            if (liveStream != null)
+                return;
             liveStream = WebSocketClient.connect(endpoint, false, config.sslProtocols());
             liveStream.subscribe(this);
         }
@@ -210,6 +217,14 @@ public class StreamingData implements WebSocketEventListener {
         this.streamEventListener = streamEventListener;
     }
 
+    /**
+     * 
+     * Checks that {@link StreamingData#onError(com.datasift.client.stream.ErrorListener)}
+     * and {@link StreamingData#onStreamEvent(com.datasift.client.stream.StreamEventListener)}
+     * have both been called.
+     * @param subscription
+     * @return 
+     */
     public StreamingData subscribe(final StreamSubscription subscription) {
         if (errorListener == null) {
             throw new IllegalStateException("You must call listen before subscribing to streams otherwise you'll miss" +
@@ -235,8 +250,8 @@ public class StreamingData implements WebSocketEventListener {
                 }
                 break;
             }
-            subscriptions.put(subscription.stream(), subscription);
-            liveStream.send("{\"action\":\"subscribe\",\"hash\":\"" + subscription.stream().hash() + "\"}")
+            subscriptions.put(subscription.getStream(), subscription);
+            liveStream.send("{\"action\":\"subscribe\",\"hash\":\"" + subscription.getStream().hash() + "\"}")
                     .addListener(new GenericFutureListener<Future<Void>>() {
                         public void operationComplete(Future<Void> future) throws Exception {
                             if (future.isSuccess()) {

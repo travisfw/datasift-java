@@ -6,7 +6,7 @@ import com.datasift.client.core.Stream;
  * @author Courtney Robinson <courtney.robinson@datasift.com>
  */
 public abstract class StreamSubscription {
-    private Stream stream;
+    protected Stream stream;
 
     public StreamSubscription(Stream stream) {
         if (stream == null) {
@@ -18,7 +18,7 @@ public abstract class StreamSubscription {
         this.stream = stream;
     }
 
-    public Stream stream() {
+    public Stream getStream() {
         return stream;
     }
 
