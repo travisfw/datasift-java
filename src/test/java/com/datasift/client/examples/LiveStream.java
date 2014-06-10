@@ -55,14 +55,14 @@ public class LiveStream {
         }
     }
 
-    public static class DeleteHandler extends StreamEventListener {
+    public static class DeleteHandler implements StreamEventListener {
         public void onDelete(DeletedInteraction di) {
             //go off and delete the interaction if you have it stored. This is a strict requirement!
             System.out.println("DELETED:\n " + di);
         }
     }
 
-    public static class ErrorHandler extends ErrorListener {
+    public static class ErrorHandler implements ErrorListener {
         public void exceptionCaught(Throwable t) {
             t.printStackTrace();
             //do something useful...

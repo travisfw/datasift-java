@@ -3,13 +3,14 @@ package com.datasift.client.stream;
 /**
  * @author Courtney Robinson <courtney.robinson@datasift.com>
  */
-public abstract class StreamEventListener {
-    public void streamClosed() {
+public interface StreamEventListener {
+
+    default void streamClosed() {
     }
 
-    public void streamOpened() {
+    default void streamOpened() {
     }
 
-    public abstract void onDelete(DeletedInteraction di);
+    void onDelete(DeletedInteraction di);
 
 }
