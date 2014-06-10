@@ -37,7 +37,7 @@ public class StreamingData implements WebSocketEventListener {
     protected ErrorListener errorListener;
     protected StreamEventListener streamEventListener;
     protected boolean connected;
-    /**  */
+    /** Added to in {@link StreamingData#subscribe(com.datasift.client.stream.StreamSubscription)}. */
     protected Set<StreamSubscription> unsentSubscriptions = new NonBlockingHashSet<>();
     protected short MAX_TIMEOUT = 320, currentTimeout = 1;
     protected DateTime lastSeen;
@@ -221,7 +221,8 @@ public class StreamingData implements WebSocketEventListener {
      * 
      * Checks that {@link StreamingData#onError(com.datasift.client.stream.ErrorListener)}
      * and {@link StreamingData#onStreamEvent(com.datasift.client.stream.StreamEventListener)}
-     * have both been called.
+     * have both been called, then connects ({@link StreamingData#connect()}) and
+     * pushes unsent subscriptions ({@link StreamingData#unsentSubscriptions}).
      * @param subscription
      * @return 
      */
