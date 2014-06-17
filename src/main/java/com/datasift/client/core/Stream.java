@@ -24,7 +24,7 @@ public class Stream extends BaseDataSiftResult {
      * @return an instance which can be used by the client
      */
     public static Stream fromString(String str) {
-        if (str == null || str.isEmpty()) {
+        if (str == null || str.length() != 32) {
             throw new IllegalArgumentException("Cannot create a stream from an empty or null string");
         }
         Stream stream = new Stream();
