@@ -273,12 +273,32 @@ public class StreamingData implements WebSocketEventListener {
         if (stream == null) {
             throw new IllegalArgumentException("Stream can't be null");
         }
-        if (stream.hash() == null || stream.hash().isEmpty()) {
+        if (stream.hash() == null || stream.hash().length() != Stream.HASH_LENGTH) {
             throw new IllegalArgumentException("Invalid stream subscription request, no hash available");
         }
         connect();
         liveStream.send(" { \"action\" : \"unsubscribe\" , \"hash\": \"" + stream.hash() + "\"}");
         subscriptions.remove(stream);
         return this;
+    }
+
+    /**
+     * Look through all active subscriptions for a hash that matches (linear scan).
+     * Because {@link Stream#equals(java.lang.Object) Stream's equals method} considers a timestamp,
+     * it's possible for there to be more than one subscription to the same stream. If for some reason
+     * you have more than one subscription to the same stream hash, this will only return one of them.
+     * @param hash the stream hash or null if not found
+     * @return the first StreamSubscription found that matches
+     */
+    public StreamSubscription getSubscriptionByHash(String hash) {
+        if (hash == null) return null;
+        for (Map.Entry<Stream, StreamSubscription> i : subscriptions.entrySet())
+            if (hash.equals(i.getKey()))
+                return i.getValue();
+        return null;
+    }
+
+    public int getNumberOfSubscriptions() {
+        return subscriptions.size();
     }
 }

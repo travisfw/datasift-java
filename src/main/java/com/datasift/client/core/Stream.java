@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Courtney Robinson <courtney.robinson@datasift.com>
  */
 public class Stream extends BaseDataSiftResult {
+    public static final int HASH_LENGTH = 32;
     @JsonProperty("created_at")
     protected String createdAt;
     @JsonProperty
@@ -24,7 +25,7 @@ public class Stream extends BaseDataSiftResult {
      * @return an instance which can be used by the client
      */
     public static Stream fromString(String str) {
-        if (str == null || str.length() != 32) {
+        if (str == null || str.length() != HASH_LENGTH) {
             throw new IllegalArgumentException("Cannot create a stream from an empty or null string");
         }
         Stream stream = new Stream();
