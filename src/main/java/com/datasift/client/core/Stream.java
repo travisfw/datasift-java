@@ -33,6 +33,11 @@ public class Stream extends BaseDataSiftResult {
         return stream;
     }
 
+    @Override
+    public String toString() {
+        return "Stream{" + "createdAt=" + createdAt + ", dpu=" + dpu + ", hash=" + hash + '}';
+    }
+
     public String getCreatedAt() {
         return createdAt;
     }

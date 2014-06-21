@@ -7,6 +7,7 @@ import io.higgs.ws.client.WebSocketClient;
 import io.higgs.ws.client.WebSocketEventListener;
 import io.higgs.ws.client.WebSocketMessage;
 import io.higgs.ws.client.WebSocketStream;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.websocketx.CloseWebSocketFrame;
@@ -269,7 +270,7 @@ public class StreamingData implements WebSocketEventListener {
         }
     }
 
-    public StreamingData unsubscribe(Stream stream) {
+    public ChannelFuture unsubscribe(Stream stream) {
         if (stream == null) {
             throw new IllegalArgumentException("Stream can't be null");
         }
@@ -277,9 +278,9 @@ public class StreamingData implements WebSocketEventListener {
             throw new IllegalArgumentException("Invalid stream subscription request, no hash available");
         }
         connect();
-        liveStream.send(" { \"action\" : \"unsubscribe\" , \"hash\": \"" + stream.hash() + "\"}");
+        ChannelFuture cf = liveStream.send(" { \"action\" : \"unsubscribe\" , \"hash\": \"" + stream.hash() + "\"}");
         subscriptions.remove(stream);
-        return this;
+        return cf;
     }
 
     /**
