@@ -46,6 +46,10 @@ public class Stream extends BaseDataSiftResult {
         return dpu;
     }
 
+    /**
+     * the hash of the csdl used to identify the stream of content it produces.
+     * @return 
+     */
     @JsonProperty
     public String hash() {
         return hash;

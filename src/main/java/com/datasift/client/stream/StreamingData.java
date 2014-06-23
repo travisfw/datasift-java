@@ -299,6 +299,14 @@ public class StreamingData implements WebSocketEventListener {
         return null;
     }
 
+    /**
+     * 
+     * @return a set of {@link Stream streams} that are subscribed to
+     */
+    public Set<Stream> getStreams() {
+        return subscriptions.keySet();
+    }
+
     public int getNumberOfSubscriptions() {
         return subscriptions.size();
     }
