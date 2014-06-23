@@ -219,15 +219,26 @@ public class StreamingData implements WebSocketEventListener {
     }
 
     /**
-     * 
+     * like {@link StreamingData#subscribe(com.datasift.client.stream.StreamSubscription, io.netty.util.concurrent.GenericFutureListener) }
+     * if {@code null} was passed in for the netty listener.
+     * @param subscription
+     * @return this
+     */
+    public StreamingData subscribe(final StreamSubscription subscription) {
+        this.subscribe(subscription, null);
+        return this;
+    }
+
+    /**
      * Checks that {@link StreamingData#onError(com.datasift.client.stream.ErrorListener)}
      * and {@link StreamingData#onStreamEvent(com.datasift.client.stream.StreamEventListener)}
      * have both been called, then connects ({@link StreamingData#connect()}) and
      * pushes unsent subscriptions ({@link StreamingData#unsentSubscriptions}).
      * @param subscription
-     * @return 
+     * @param nettyListener handle the completion of the subscription event (may post multiple times)
+     * @return this
      */
-    public StreamingData subscribe(final StreamSubscription subscription) {
+    public StreamingData subscribe(final StreamSubscription subscription, GenericFutureListener<Future<Void>> nettyListener) {
         if (errorListener == null) {
             throw new IllegalStateException("You must call listen before subscribing to streams otherwise you'll miss" +
                     " any exceptions that may occur");
@@ -239,12 +250,19 @@ public class StreamingData implements WebSocketEventListener {
         connect();
         unsentSubscriptions.add(subscription);
         if (connected) {
-            pushUnsentSubscriptions();
+            pushUnsentSubscriptions(nettyListener);
         }
         return this;
     }
 
+    /**
+     * like {@link #pushUnsentSubscriptions(io.netty.util.concurrent.GenericFutureListener) }
+     * if null is passed in for the netty listener.
+     */
     protected void pushUnsentSubscriptions() {
+        pushUnsentSubscriptions(null);
+    }
+    protected void pushUnsentSubscriptions(GenericFutureListener<Future<Void>> nettyListener) {
         for (final StreamSubscription subscription : unsentSubscriptions) {
             if (!connected || liveStream.channel() == null || !liveStream.channel().isActive()) {
                 synchronized (this) {
@@ -253,17 +271,19 @@ public class StreamingData implements WebSocketEventListener {
                 break;
             }
             subscriptions.put(subscription.getStream(), subscription);
-            liveStream.send("{\"action\":\"subscribe\",\"hash\":\"" + subscription.getStream().hash() + "\"}")
-                    .addListener(new GenericFutureListener<Future<Void>>() {
-                        public void operationComplete(Future<Void> future) throws Exception {
-                            if (future.isSuccess()) {
-                                unsentSubscriptions.remove(subscription);
-                            } else {
-                                fireError(future.cause());
-                                subscribe(subscription);
-                            }
-                        }
-                    });
+            ChannelFuture cfut = liveStream.send("{\"action\":\"subscribe\",\"hash\":\"" + subscription.getStream().hash() + "\"}");
+            cfut.addListener(new GenericFutureListener<Future<Void>>() {
+                public void operationComplete(Future<Void> future) throws Exception {
+                    if (future.isSuccess()) {
+                        unsentSubscriptions.remove(subscription);
+                    } else {
+                        fireError(future.cause());
+                        subscribe(subscription);
+                    }
+                }
+            });
+            if (nettyListener != null)
+                cfut.addListener(nettyListener);
         }
         if (!connected) {
             connect();
@@ -300,7 +320,6 @@ public class StreamingData implements WebSocketEventListener {
     }
 
     /**
-     * 
      * @return a set of {@link Stream streams} that are subscribed to
      */
     public Set<Stream> getStreams() {
