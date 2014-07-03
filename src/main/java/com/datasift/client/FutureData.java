@@ -111,7 +111,7 @@ public class FutureData<T> {
         }
     }
 
-    public void interuptCause(Throwable cause) {
+    public void setInterruptCause(Throwable cause) {
         this.interruptCause = cause;
     }
 }

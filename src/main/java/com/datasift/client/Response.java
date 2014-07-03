@@ -1,7 +1,7 @@
 package com.datasift.client;
 
+import static com.datasift.client.DataSiftClient.MAPPER;
 import com.fasterxml.jackson.core.JsonProcessingException;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,7 +93,7 @@ public class Response {
     @Override
     public String toString() {
         try {
-            return DataSiftClient.MAPPER.writeValueAsString(rawResponse);
+            return MAPPER.writeValueAsString(rawResponse);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
             return "Unable to generate string representation of this response/result";

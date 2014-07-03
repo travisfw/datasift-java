@@ -263,12 +263,16 @@ public class DataSiftPush extends DataSiftApiClient {
         performRequest(future, request);
     }
 
+    /**
+     * Retrieve log messages about subscriptions
+     * @see #log(java.lang.String, int, int, java.lang.String, java.lang.String) 
+     */
     public FutureData<PushLogMessages> log(String id, int page) {
         return log(id, page, 0, null, null);
     }
 
     /**
-     * Retreive log messages about subscriptions
+     * Retrieve log messages about subscriptions
      *
      * @param id             the ID of a subscription
      * @param page           the page number
@@ -350,6 +354,15 @@ public class DataSiftPush extends DataSiftApiClient {
         }
         performRequest(future, request);
         return future;
+    }
+
+    /**
+     * same as
+     * {@link #get(int, int, java.lang.String, java.lang.String, boolean)} but
+     * with unspecified order.
+     */
+    public FutureData<PushCollection> get(int page, int perPage, boolean includeFinished) {
+        return get(page, perPage, null, null, includeFinished);
     }
 
     /**

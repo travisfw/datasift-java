@@ -3,7 +3,7 @@ package com.datasift.client.push;
 import com.datasift.client.BaseDataSiftResult;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -36,6 +36,6 @@ public class PushCollection extends BaseDataSiftResult implements Iterable<PushS
     }
 
     private List<PushSubscription> listOrEmpty() {
-        return subscriptions == null ? new ArrayList<PushSubscription>() : subscriptions;
+        return subscriptions == null ? Collections.EMPTY_LIST : subscriptions;
     }
 }

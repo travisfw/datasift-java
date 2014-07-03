@@ -115,7 +115,7 @@ public class DataSiftApiClient {
             @Override
             public void operationComplete(Future<? super io.higgs.http.client.Response> future) throws Exception {
                 if (!future.isSuccess()) {
-                    response.interuptCause(future.cause());
+                    response.setInterruptCause(future.cause());
                     //thread.interrupt();
                     response.doNotify();
                 }
