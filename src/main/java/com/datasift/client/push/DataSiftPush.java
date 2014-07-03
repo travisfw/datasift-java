@@ -44,16 +44,7 @@ public class DataSiftPush extends DataSiftApiClient {
      * @return the push subscription that has been paused
      */
     public FutureData<PushSubscription> pause(String id) {
-        if (id == null || id.isEmpty()) {
-            throw new IllegalArgumentException("A push subscription ID is required");
-        }
-        FutureData<PushSubscription> future = new FutureData<>();
-        URI uri = newParams().forURL(config.newAPIEndpointURI(PAUSE));
-        POST request = config.http()
-                .POST(uri, new PageReader(newRequestCallback(future, new PushSubscription())))
-                .form("id", id);
-        performRequest(future, request);
-        return future;
+        return simpleReq(id, PAUSE);
     }
 
     /**
@@ -63,11 +54,15 @@ public class DataSiftPush extends DataSiftApiClient {
      * @return the push subscription
      */
     public FutureData<PushSubscription> resume(String id) {
+        return simpleReq(id, RESUME);
+    }
+
+    private FutureData simpleReq(String id, String restResource) {
         if (id == null || id.isEmpty()) {
             throw new IllegalArgumentException("A push subscription ID is required");
         }
-        FutureData<PushSubscription> future = new FutureData<>();
-        URI uri = newParams().forURL(config.newAPIEndpointURI(RESUME));
+        FutureData future = new FutureData();
+        URI uri = newParams().forURL(config.newAPIEndpointURI(restResource));
         POST request = config.http()
                 .POST(uri, new PageReader(newRequestCallback(future, new PushSubscription())))
                 .form("id", id);
@@ -82,16 +77,7 @@ public class DataSiftPush extends DataSiftApiClient {
      * @return the subscription that was stopped
      */
     public FutureData<PushSubscription> stop(String id) {
-        if (id == null || id.isEmpty()) {
-            throw new IllegalArgumentException("A push subscription ID is required");
-        }
-        FutureData<PushSubscription> future = new FutureData<>();
-        URI uri = newParams().forURL(config.newAPIEndpointURI(STOP));
-        POST request = config.http()
-                .POST(uri, new PageReader(newRequestCallback(future, new PushSubscription())))
-                .form("id", id);
-        performRequest(future, request);
-        return future;
+        return simpleReq(id, STOP);
     }
 
     /**
@@ -101,16 +87,7 @@ public class DataSiftPush extends DataSiftApiClient {
      * @return a DataSiftResult which can be checked for success or failure of the request
      */
     public FutureData<DataSiftResult> delete(String id) {
-        if (id == null || id.isEmpty()) {
-            throw new IllegalArgumentException("A push subscription ID is required");
-        }
-        FutureData<DataSiftResult> future = new FutureData<>();
-        URI uri = newParams().forURL(config.newAPIEndpointURI(DELETE));
-        POST request = config.http()
-                .POST(uri, new PageReader(newRequestCallback(future, new BaseDataSiftResult())))
-                .form("id", id);
-        performRequest(future, request);
-        return future;
+        return simpleReq(id, DELETE);
     }
 
     public FutureData<PushSubscription> update(String id, PushConnector connector) {
@@ -310,17 +287,7 @@ public class DataSiftPush extends DataSiftApiClient {
      * @return the push subscription for the given ID
      */
     public FutureData<PushSubscription> get(String id) {
-        if (id == null) {
-            throw new IllegalArgumentException("A subscription ID is required");
-        }
-
-        FutureData<PushSubscription> future = new FutureData<>();
-        URI uri = newParams().forURL(config.newAPIEndpointURI(GET));
-        POST request = config.http()
-                .POST(uri, new PageReader(newRequestCallback(future, new PushSubscription())));
-        request.form("id", id);
-        performRequest(future, request);
-        return future;
+        return simpleReq(id, GET);
     }
 
     /**
