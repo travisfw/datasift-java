@@ -144,6 +144,11 @@ public class DataSiftPush extends DataSiftApiClient {
         return future;
     }
 
+    /**
+     * Retrieve a continuous stream of interactions.
+     * @param id the push subscription ID
+     * @return a continuous list of interactions
+     */
     public FutureData<PulledInteractions> pull(PushSubscription id) {
         return pull(id, 0, null);
     }
@@ -156,7 +161,8 @@ public class DataSiftPush extends DataSiftApiClient {
      * @param cursor a pointer into the push
      * @return a set of interactions pulled from the specified push queue
      */
-    public FutureData<PulledInteractions> pull(final PushSubscription id, final int size, final String cursor) {
+    public FutureData<PulledInteractions> pull(final PushSubscription id,
+            final int size, final String cursor) {
         if (id == null || id.getId() == null || id.getId().isEmpty()) {
             throw new IllegalArgumentException("A push subscription ID is required");
         }
@@ -231,14 +237,11 @@ public class DataSiftPush extends DataSiftApiClient {
             }
 
             protected void schedulePoll(final PullReader internalReader) {
-                HttpRequestBuilder.group().schedule(new Runnable() {
-                    @Override
-                    public void run() {
-                        sendPullRequest(future, id, size, nextCursor, uri, internalReader);
-                    }
-                    //wait for at least the back off period,
-                    //if we're not backing off this is 0 so it runs immediately
-                }, backOff, TimeUnit.SECONDS);
+                HttpRequestBuilder.group().schedule(
+                        () -> sendPullRequest(future, id, size, nextCursor, uri, internalReader),
+                        //wait for at least the back off period,
+                        //if we're not backing off this is 0 so it runs immediately
+                        backOff, TimeUnit.SECONDS);
             }
         };
         sendPullRequest(future, id, size, cursor, uri, reader);
@@ -247,7 +250,8 @@ public class DataSiftPush extends DataSiftApiClient {
         return future;
     }
 
-    protected void sendPullRequest(FutureData<PulledInteractions> future, PushSubscription id, int size, String cursor,
+    protected void sendPullRequest(FutureData<PulledInteractions> future,
+            PushSubscription id, int size, String cursor,
                                    URI uri, PullReader reader) {
         POST request = config.http().POST(uri, reader).form("id", id.getId());
         if (cursor != null && !cursor.isEmpty()) {
