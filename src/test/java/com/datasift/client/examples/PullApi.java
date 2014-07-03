@@ -8,17 +8,12 @@ import com.datasift.client.push.PushSubscription;
 import com.datasift.client.push.pull.LastInteraction;
 import com.datasift.client.push.pull.PullJsonType;
 import com.datasift.client.stream.Interaction;
-import org.joda.time.DateTime;
-
-import java.util.Date;
 
 public class PullApi {
     private PullApi() {
     }
 
     public static void main(String... args) throws InterruptedException {
-        DateTime.now();
-        new Date();
         DataSiftConfig config = new DataSiftConfig("zcourts", "acbf4788f875db9fdf6bbd2131b10752");
         final DataSiftClient datasift = new DataSiftClient(config);
         Stream stream = Stream.fromString("13e9347e7da32f19fcdb08e297019d2e");

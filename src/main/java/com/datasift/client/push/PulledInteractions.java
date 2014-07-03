@@ -41,6 +41,7 @@ public class PulledInteractions extends BaseDataSiftResult implements Iterable<I
     }
 
     protected void add(Interaction interaction) {
-        queue.add(interaction);
+        if (interaction != null)
+            queue.add(interaction);
     }
 }
