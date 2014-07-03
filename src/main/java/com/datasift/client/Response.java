@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * an http response.
+ *
  * @author Courtney Robinson <courtney.robinson@datasift.com>
  */
 public class Response {
@@ -19,8 +21,8 @@ public class Response {
     public Response(String data, io.higgs.http.client.Response rawResponse) {
         this.data = data;
         this.rawResponse = rawResponse;
-        //we're doing this here to ensure it's only done once and to avoid exposing any classes from the underlying
-        // client
+        //we're doing this here to ensure it's only done once and to avoid exposing
+        // any classes from the underlying client
         //this means we can swap out the client if need be without breaking the public API
         if (rawResponse.getHeaders() != null) {
             for (String name : rawResponse.getHeaders().names()) {

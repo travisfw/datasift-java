@@ -56,7 +56,7 @@ public class DataSiftManagedSource extends DataSiftApiClient {
         }
         FutureData<ManagedSource> future = new FutureData<>();
         URI uri = newParams().forURL(config.newAPIEndpointURI(id == null ? CREATE : UPDATE));
-        POST request = config.http().POST(uri, new PageReader(newRequestCallback(future, new ManagedSource(), config)))
+        POST request = config.http().POST(uri, new PageReader(newRequestCallback(future, new ManagedSource())))
                 .form("source_type", source.type().value())
                 .form("name", name);
         if (source.hasParams()) {
@@ -93,7 +93,7 @@ public class DataSiftManagedSource extends DataSiftApiClient {
         unwrapFuture(source, future, res, new FutureResponse<ManagedSource>() {
             public void apply(ManagedSource data) {
                 URI uri = newParams().forURL(config.newAPIEndpointURI(START));
-                POST request = config.http().POST(uri, new PageReader(newRequestCallback(future, data, config)))
+                POST request = config.http().POST(uri, new PageReader(newRequestCallback(future, data)))
                         .form("id", data.getId());
                 performRequest(future, request);
             }
@@ -111,7 +111,7 @@ public class DataSiftManagedSource extends DataSiftApiClient {
         }
         FutureData<ManagedSource> future = new FutureData<>();
         URI uri = newParams().forURL(config.newAPIEndpointURI(STOP));
-        POST request = config.http().POST(uri, new PageReader(newRequestCallback(future, new ManagedSource(), config)))
+        POST request = config.http().POST(uri, new PageReader(newRequestCallback(future, new ManagedSource())))
                 .form("id", id);
         performRequest(future, request);
         return future;
@@ -128,7 +128,7 @@ public class DataSiftManagedSource extends DataSiftApiClient {
         FutureData<DataSiftResult> future = new FutureData<>();
         URI uri = newParams().forURL(config.newAPIEndpointURI(DELETE));
         POST request = config.http()
-                .POST(uri, new PageReader(newRequestCallback(future, new BaseDataSiftResult(), config)))
+                .POST(uri, new PageReader(newRequestCallback(future, new BaseDataSiftResult())))
                 .form("id", id);
         performRequest(future, request);
         return future;
@@ -163,7 +163,7 @@ public class DataSiftManagedSource extends DataSiftApiClient {
         }
         URI uri = b.forURL(config.newAPIEndpointURI(GET));
         Request request = config.http().
-                GET(uri, new PageReader(newRequestCallback(future, new ManagedSourceList(), config)));
+                GET(uri, new PageReader(newRequestCallback(future, new ManagedSourceList())));
         performRequest(future, request);
         return future;
     }
@@ -176,7 +176,7 @@ public class DataSiftManagedSource extends DataSiftApiClient {
         FutureData<ManagedSource> future = new FutureData<>();
         URI uri = newParams().put("id", id).forURL(config.newAPIEndpointURI(GET));
         Request request = config.http().
-                GET(uri, new PageReader(newRequestCallback(future, new ManagedSource(), config)));
+                GET(uri, new PageReader(newRequestCallback(future, new ManagedSource())));
         performRequest(future, request);
         return future;
     }
@@ -203,7 +203,7 @@ public class DataSiftManagedSource extends DataSiftApiClient {
         }
         URI uri = b.forURL(config.newAPIEndpointURI(LOG));
         Request request = config.http().
-                GET(uri, new PageReader(newRequestCallback(future, new ManagedSourceLog(), config)));
+                GET(uri, new PageReader(newRequestCallback(future, new ManagedSourceLog())));
         performRequest(future, request);
         return future;
     }

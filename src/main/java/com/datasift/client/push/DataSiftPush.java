@@ -31,6 +31,7 @@ public class DataSiftPush extends DataSiftApiClient {
     public final String VALIDATE = "push/validate", CREATE = "push/create", PAUSE = "push/pause",
             RESUME = "push/resume", UPDATE = "push/update", STOP = "push/stop", DELETE = "push/delete",
             LOG = "push/log", GET = "push/get", PULL = "pull";
+    protected final String kOutputParamsFormatKey = "output_params.format";
 
     public DataSiftPush(DataSiftConfig config) {
         super(config);
@@ -49,7 +50,7 @@ public class DataSiftPush extends DataSiftApiClient {
         FutureData<PushSubscription> future = new FutureData<>();
         URI uri = newParams().forURL(config.newAPIEndpointURI(PAUSE));
         POST request = config.http()
-                .POST(uri, new PageReader(newRequestCallback(future, new PushSubscription(), config)))
+                .POST(uri, new PageReader(newRequestCallback(future, new PushSubscription())))
                 .form("id", id);
         performRequest(future, request);
         return future;
@@ -68,7 +69,7 @@ public class DataSiftPush extends DataSiftApiClient {
         FutureData<PushSubscription> future = new FutureData<>();
         URI uri = newParams().forURL(config.newAPIEndpointURI(RESUME));
         POST request = config.http()
-                .POST(uri, new PageReader(newRequestCallback(future, new PushSubscription(), config)))
+                .POST(uri, new PageReader(newRequestCallback(future, new PushSubscription())))
                 .form("id", id);
         performRequest(future, request);
         return future;
@@ -87,7 +88,7 @@ public class DataSiftPush extends DataSiftApiClient {
         FutureData<PushSubscription> future = new FutureData<>();
         URI uri = newParams().forURL(config.newAPIEndpointURI(STOP));
         POST request = config.http()
-                .POST(uri, new PageReader(newRequestCallback(future, new PushSubscription(), config)))
+                .POST(uri, new PageReader(newRequestCallback(future, new PushSubscription())))
                 .form("id", id);
         performRequest(future, request);
         return future;
@@ -106,7 +107,7 @@ public class DataSiftPush extends DataSiftApiClient {
         FutureData<DataSiftResult> future = new FutureData<>();
         URI uri = newParams().forURL(config.newAPIEndpointURI(DELETE));
         POST request = config.http()
-                .POST(uri, new PageReader(newRequestCallback(future, new BaseDataSiftResult(), config)))
+                .POST(uri, new PageReader(newRequestCallback(future, new BaseDataSiftResult())))
                 .form("id", id);
         performRequest(future, request);
         return future;
@@ -117,7 +118,7 @@ public class DataSiftPush extends DataSiftApiClient {
     }
 
     /**
-     * Updates the name or output parameters for a push sucription
+     * Updates the name or output parameters for a push subscription
      *
      * @param id        the subscription ID
      * @param connector the output parameters to update to
@@ -131,7 +132,7 @@ public class DataSiftPush extends DataSiftApiClient {
         FutureData<PushSubscription> future = new FutureData<>();
         URI uri = newParams().forURL(config.newAPIEndpointURI(UPDATE));
         POST request = config.http()
-                .POST(uri, new PageReader(newRequestCallback(future, new PushSubscription(), config)))
+                .POST(uri, new PageReader(newRequestCallback(future, new PushSubscription())))
                 .form("id", id);
         for (Map.Entry<String, String> e : connector.parameters().verifyAndGet().entrySet()) {
             request.form(e.getKey(), e.getValue());
@@ -276,7 +277,7 @@ public class DataSiftPush extends DataSiftApiClient {
         FutureData<PushLogMessages> future = new FutureData<>();
         URI uri = newParams().forURL(config.newAPIEndpointURI(LOG));
         POST request = config.http()
-                .POST(uri, new PageReader(newRequestCallback(future, new PushLogMessages(), config)));
+                .POST(uri, new PageReader(newRequestCallback(future, new PushLogMessages())));
         if (id != null && !id.isEmpty()) {
             request.form("id", id);
         }
@@ -308,7 +309,7 @@ public class DataSiftPush extends DataSiftApiClient {
         FutureData<PushSubscription> future = new FutureData<>();
         URI uri = newParams().forURL(config.newAPIEndpointURI(GET));
         POST request = config.http()
-                .POST(uri, new PageReader(newRequestCallback(future, new PushSubscription(), config)));
+                .POST(uri, new PageReader(newRequestCallback(future, new PushSubscription())));
         request.form("id", id);
         performRequest(future, request);
         return future;
@@ -329,7 +330,7 @@ public class DataSiftPush extends DataSiftApiClient {
         FutureData<PushCollection> future = new FutureData<>();
         URI uri = newParams().forURL(config.newAPIEndpointURI(GET));
         POST request = config.http()
-                .POST(uri, new PageReader(newRequestCallback(future, new PushCollection(), config)));
+                .POST(uri, new PageReader(newRequestCallback(future, new PushCollection())));
         request.form("include_finished", includeFinished ? 1 : 0);
         if (page > 0) {
             request.form("page", page);
@@ -363,7 +364,7 @@ public class DataSiftPush extends DataSiftApiClient {
         FutureData<PushCollection> future = new FutureData<>();
         URI uri = newParams().forURL(config.newAPIEndpointURI(GET));
         POST request = config.http()
-                .POST(uri, new PageReader(newRequestCallback(future, new PushCollection(), config)));
+                .POST(uri, new PageReader(newRequestCallback(future, new PushCollection())));
         request.form("hash", hash.hash()).form("include_finished", includeFinished ? 1 : 0);
         if (page > 0) {
             request.form("page", page);
@@ -397,7 +398,7 @@ public class DataSiftPush extends DataSiftApiClient {
         FutureData<PushCollection> future = new FutureData<>();
         URI uri = newParams().forURL(config.newAPIEndpointURI(GET));
         POST request = config.http()
-                .POST(uri, new PageReader(newRequestCallback(future, new PushCollection(), config)));
+                .POST(uri, new PageReader(newRequestCallback(future, new PushCollection())));
         request.form("historics_id", historics.getId()).form("include_finished", includeFinished ? 1 : 0);
         if (page > 0) {
             request.form("page", page);
@@ -423,7 +424,7 @@ public class DataSiftPush extends DataSiftApiClient {
     public <T extends PushConnector> FutureData<PushValidation> validate(T connector) {
         FutureData<PushValidation> future = new FutureData<>();
         URI uri = newParams().forURL(config.newAPIEndpointURI(VALIDATE));
-        POST request = config.http().POST(uri, new PageReader(newRequestCallback(future, new PushValidation(), config)))
+        POST request = config.http().POST(uri, new PageReader(newRequestCallback(future, new PushValidation())))
                 .form("output_type", connector.type().value());
         for (Map.Entry<String, String> e : connector.parameters().verifyAndGet().entrySet()) {
             request.form(e.getKey(), e.getValue());
@@ -432,11 +433,11 @@ public class DataSiftPush extends DataSiftApiClient {
         return future;
     }
 
-    public <T extends PushConnector> FutureData<PushSubscription> create(final T connector,
-                                                                         final FutureData<PreparedHistoricsQuery>
-                                                                                 historics,
-                                                                         FutureData<Stream> stream,
-                                                                         final String name) {
+    public <T extends PushConnector> FutureData<PushSubscription> create(
+            final T connector,
+            final FutureData<PreparedHistoricsQuery> historics,
+            final FutureData<Stream> stream,
+            final String name) {
         return create(connector, historics, stream, name, null, 0, 0);
     }
 
@@ -479,8 +480,10 @@ public class DataSiftPush extends DataSiftApiClient {
     }
 
     /**
-     * Create a push subscription to be consumed via {@link #pull(PushSubscription, int, String)} using a live stream
+     * Create a push subscription to be consumed via
+     * {@link #pull(PushSubscription, int, String)} using a live stream
      *
+     * @param jsonMeta      value in POST req for form key: {@value #kOutputParamsFormatKey}
      * @param historics     the historic query which will be consumed via pull
      * @param name          a name for the subscription
      * @param initialStatus the initial status of the subscription
@@ -488,19 +491,23 @@ public class DataSiftPush extends DataSiftApiClient {
      * @param end           an optional timestamp of when to stop
      * @return this
      */
-    public FutureData<PushSubscription> createPull(PullJsonType jsonMeta, PreparedHistoricsQuery historics, String name,
-                                                   Status initialStatus, long start, long end) {
-        return createPull(jsonMeta, historics, null, name, initialStatus, start, end);
+    public FutureData<PushSubscription> createPull(PullJsonType jsonMeta,
+            PreparedHistoricsQuery historics, String name,
+            Status initialStatus, long start, long end) {
+        return createHistoricsPull(jsonMeta, historics, name, initialStatus, start, end);
     }
 
-    public FutureData<PushSubscription> createPull(PullJsonType jsonMeta, PreparedHistoricsQuery historics,
-                                                   String name) {
-        return createPull(jsonMeta, historics, null, name, null, 0, 0);
+    /** @see #createPull(com.datasift.client.push.pull.PullJsonType, com.datasift.client.historics.PreparedHistoricsQuery, java.lang.String, com.datasift.client.push.Status, long, long) */
+    public FutureData<PushSubscription> createPull(PullJsonType jsonMeta,
+            PreparedHistoricsQuery historics, String name) {
+        return createHistoricsPull(jsonMeta, historics, name, null, 0, 0);
     }
 
     /**
-     * Create a push subscription to be consumed via {@link #pull(PushSubscription, int, String)} using a live stream
+     * Create a push subscription to be consumed via
+     * {@link #pull(PushSubscription, int, String)} using a live stream
      *
+     * @param jsonMeta      value in POST req for form key: {@value #kOutputParamsFormatKey}
      * @param stream        the stream which will be consumed via pull
      * @param name          a name for the subscription
      * @param initialStatus the initial status of the subscription
@@ -508,42 +515,44 @@ public class DataSiftPush extends DataSiftApiClient {
      * @param end           an optional timestamp of when to stop
      * @return this
      */
-    public FutureData<PushSubscription> createPull(PullJsonType jsonMeta, Stream stream, String name,
-                                                   Status initialStatus, long start, long end) {
-        return createPull(jsonMeta, null, stream, name, initialStatus, start, end);
+    public FutureData<PushSubscription> createPull(PullJsonType jsonMeta,
+            Stream stream, String name,
+            Status initialStatus, long start, long end) {
+        return createStreamPull(jsonMeta, stream, name, initialStatus, start, end);
     }
 
-    public FutureData<PushSubscription> createPull(PullJsonType jsonMeta, Stream stream, String name) {
-        return createPull(jsonMeta, null, stream, name, null, 0, 0);
+    /**
+     * @see #createPull(com.datasift.client.push.pull.PullJsonType, com.datasift.client.core.Stream, java.lang.String, com.datasift.client.push.Status, long, long)
+     */
+    public FutureData<PushSubscription> createPull(PullJsonType jsonMeta,
+            Stream stream, String name) {
+        return createStreamPull(jsonMeta, stream, name, null, 0, 0);
     }
 
-    public FutureData<PushSubscription> createPull(PullJsonType type, PreparedHistoricsQuery historics, Stream stream,
-                                                   String name,
-                                                   Status initialStatus,
-                                                   long start,
-                                                   long end) {
-        final FutureData<PushSubscription> future = new FutureData<>();
+    /**
+     * 
+     * @param type null means unspecified
+     * @param name
+     * @param initialStatus null means unspecified
+     * @param start zero means unspecified
+     * @param end zero means unspecified
+     * @param future 
+     * @return 
+     */
+    private POST pullPostTemplate(final PullJsonType type,
+            final String name,    final Status initialStatus,
+            final long start,     final long end,
+            final FutureData<PushSubscription> future
+    ) {
+        assert name != null;
         URI uri = newParams().forURL(config.newAPIEndpointURI(CREATE));
         POST request = config.http()
-                .POST(uri, new PageReader(newRequestCallback(future, new PushSubscription(), config)))
+                .POST(uri, new PageReader(newRequestCallback(future, new PushSubscription())))
                 .form("output_type", "pull")
                 .form("output_params.acl", "private")
                 .form("name", name);
         if (type != null) {
-            request.form("output_params.format", type.asString());
-        }
-        if (historics != null && stream != null) {
-            throw new IllegalStateException("Historics and Stream cannot both be specified");
-        }
-        if (historics == null && stream == null) {
-            throw new IllegalArgumentException("At least one of Historics OR Stream must be specified");
-        }
-
-        if (historics != null) {
-            request.form("historics_id", historics.getId());
-        }
-        if (stream != null) {
-            request.form("hash", stream.hash());
+            request.form(kOutputParamsFormatKey, type.asString());
         }
         if (initialStatus != null) {
             request.form("initial_status", initialStatus.val());
@@ -554,6 +563,28 @@ public class DataSiftPush extends DataSiftApiClient {
         if (end > 0) {
             request.form("end", end);
         }
+        return request;
+    }
+    
+    public FutureData<PushSubscription> createHistoricsPull(
+            PullJsonType type, PreparedHistoricsQuery historics,
+            String name,       Status initialStatus,
+            long start,        long end
+    ) {
+        final FutureData<PushSubscription> future = new FutureData<>();
+        POST request = pullPostTemplate(type, name, initialStatus, start, end, future);
+        request.form("historics_id", historics.getId());
+        performRequest(future, request);
+        return future;
+    }
+    public FutureData<PushSubscription> createStreamPull(
+            PullJsonType type, Stream stream,
+            String name,       Status initialStatus,
+            long start,        long end
+    ) {
+        final FutureData<PushSubscription> future = new FutureData<>();
+        POST request = pullPostTemplate(type, name, initialStatus, start, end, future);
+        request.form("hash", stream.hash());
         performRequest(future, request);
         return future;
     }
@@ -577,19 +608,21 @@ public class DataSiftPush extends DataSiftApiClient {
      *                      must be greater than start
      * @return the subscription that will be created
      */
-    public <T extends PushConnector> FutureData<PushSubscription> create(final T connector,
-                                                                         FutureData<PreparedHistoricsQuery>
-                                                                                 historics, FutureData<Stream> stream,
-                                                                         final String name,
-                                                                         final Status initialStatus,
-                                                                         final long start,
-                                                                         final long end) {
+    public <T extends PushConnector> FutureData<PushSubscription> create(
+            final T connector,
+            FutureData<PreparedHistoricsQuery> historics,
+            FutureData<Stream> stream,
+            final String name,
+            final Status initialStatus,
+            final long start,
+            final long end) {
         if (name == null) {
             throw new IllegalArgumentException("Name is required in order to create a push subscription");
         }
         if (historics != null && stream != null) {
-            throw new IllegalArgumentException("A push subscription cannot be created with both a historic and live " +
-                    "stream. One must be null");
+            throw new IllegalArgumentException("A push subscription cannot be"
+                    + " created with both a historic and live stream."
+                    + " One must be null");
         }
         if (end > 0 && !(end > start)) {
             throw new IllegalArgumentException("If end is specified it must be greater than the start");
@@ -619,14 +652,15 @@ public class DataSiftPush extends DataSiftApiClient {
         return future;
     }
 
-    private <T extends PushConnector> void performCreateQuery(T connector, String name,
-                                                              Status initialStatus, long start, long end,
-                                                              FutureData<PushSubscription> future,
-                                                              PushSubscription subscription,
-                                                              PreparedHistoricsQuery historics,
-                                                              Stream stream) {
+    private <T extends PushConnector> void performCreateQuery(
+            T connector, String name,
+            Status initialStatus, long start, long end,
+            FutureData<PushSubscription> future,
+            PushSubscription subscription,
+            PreparedHistoricsQuery historics,
+            Stream stream) {
         URI uri = newParams().forURL(config.newAPIEndpointURI(CREATE));
-        POST request = config.http().POST(uri, new PageReader(newRequestCallback(future, subscription, config)))
+        POST request = config.http().POST(uri, new PageReader(newRequestCallback(future, subscription)))
                 .form("output_type", connector.type().value())
                 .form("name", name);
 

@@ -19,11 +19,12 @@ public class DataSiftConfig {
     protected String host = "api.datasift.com";
     /**
      * This instance should be used as a base for configurations.
-     * All new requests should use {@link io.higgs.http.client.HttpRequestBuilder#copy()}
-     * Although a single instance would work, this keeps things simple and ensures no stale data is passed in
-     * subsequent requests.
-     * It is also very cheap in terms of Netty's thread usage because Higgs re-uses the same event loop group
-     * so it'll never be creating a whole new load of resources for each instance.
+     * All new requests should use
+     * {@link io.higgs.http.client.HttpRequestBuilder#copy()} Although a single
+     * instance would work, this keeps things simple and ensures no stale data
+     * is passed in subsequent requests. It is also very cheap in terms of
+     * Netty's thread usage because Higgs re-uses the same event loop group so
+     * it'll never be creating a whole new load of resources for each instance.
      */
     protected HttpRequestBuilder http = HttpRequestBuilder.instance();
     protected String versionPrefix = "v1.1";
@@ -206,7 +207,7 @@ public class DataSiftConfig {
     }
 
     public HttpRequestBuilder http() {
-        return http;
+        return http.copy();
     }
 
     /**

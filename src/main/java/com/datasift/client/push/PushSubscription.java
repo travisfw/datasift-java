@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Map;
 
 /**
+ * Essentially just a piece of Json.
  * @author Courtney Robinson <courtney.robinson@datasift.com>
  */
 public class PushSubscription extends BaseDataSiftResult {

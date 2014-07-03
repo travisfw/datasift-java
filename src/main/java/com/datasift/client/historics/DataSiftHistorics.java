@@ -74,7 +74,7 @@ public class DataSiftHistorics extends DataSiftApiClient {
         FutureData<DataSiftResult> future = f != null ? f : new FutureData<DataSiftResult>();
         URI uri = newParams().forURL(config.newAPIEndpointURI(START));
         POST request = config.http()
-                .POST(uri, new PageReader(newRequestCallback(future, new BaseDataSiftResult(), config)))
+                .POST(uri, new PageReader(newRequestCallback(future, new BaseDataSiftResult())))
                 .form("id", id);
         performRequest(future, request);
         return future;
@@ -101,7 +101,7 @@ public class DataSiftHistorics extends DataSiftApiClient {
         FutureData<DataSiftResult> future = new FutureData<>();
         URI uri = newParams().forURL(config.newAPIEndpointURI(STOP));
         POST request = config.http()
-                .POST(uri, new PageReader(newRequestCallback(future, new BaseDataSiftResult(), config)))
+                .POST(uri, new PageReader(newRequestCallback(future, new BaseDataSiftResult())))
                 .form("id", id);
         if (reason != null) {
             request.form("reason", reason);
@@ -130,7 +130,7 @@ public class DataSiftHistorics extends DataSiftApiClient {
         FutureData<DataSiftResult> future = new FutureData<>();
         URI uri = newParams().forURL(config.newAPIEndpointURI(DELETE));
         POST request = config.http()
-                .POST(uri, new PageReader(newRequestCallback(future, new BaseDataSiftResult(), config)))
+                .POST(uri, new PageReader(newRequestCallback(future, new BaseDataSiftResult())))
                 .form("id", id);
         performRequest(future, request);
         return future;
@@ -150,7 +150,7 @@ public class DataSiftHistorics extends DataSiftApiClient {
         FutureData<DataSiftResult> future = new FutureData<>();
         URI uri = newParams().forURL(config.newAPIEndpointURI(UPDATE));
         POST request = config.http()
-                .POST(uri, new PageReader(newRequestCallback(future, new BaseDataSiftResult(), config)))
+                .POST(uri, new PageReader(newRequestCallback(future, new BaseDataSiftResult())))
                 .form("id", id)
                 .form("name", name);
         performRequest(future, request);
@@ -169,7 +169,7 @@ public class DataSiftHistorics extends DataSiftApiClient {
         FutureData<HistoricsStatus> future = new FutureData<>();
         URI uri = newParams().forURL(config.newAPIEndpointURI(STATUS));
         POST request = config.http()
-                .POST(uri, new PageReader(newRequestCallback(future, new HistoricsStatus(), config)))
+                .POST(uri, new PageReader(newRequestCallback(future, new HistoricsStatus())))
                 .form("start", MILLISECONDS.toSeconds(start.getMillis()))
                 .form("end", MILLISECONDS.toSeconds(end.getMillis()));
         if (sources != null && sources.length > 0) {
@@ -200,7 +200,7 @@ public class DataSiftHistorics extends DataSiftApiClient {
         }
         FutureData<HistoricsQuery> future = new FutureData<>();
         URI uri = newParams().forURL(config.newAPIEndpointURI(GET));
-        POST request = config.http().POST(uri, new PageReader(newRequestCallback(future, new HistoricsQuery(), config)))
+        POST request = config.http().POST(uri, new PageReader(newRequestCallback(future, new HistoricsQuery())))
                 .form("id", id)
                 .form("with_estimate", withEstimate ? 1 : 0);
         performRequest(future, request);
@@ -231,7 +231,7 @@ public class DataSiftHistorics extends DataSiftApiClient {
         FutureData<HistoricsQueryList> future = new FutureData<>();
         URI uri = newParams().forURL(config.newAPIEndpointURI(GET));
         POST request = config.http()
-                .POST(uri, new PageReader(newRequestCallback(future, new HistoricsQueryList(), config)))
+                .POST(uri, new PageReader(newRequestCallback(future, new HistoricsQueryList())))
                 .form("with_estimate", withEstimate ? 1 : 0);
         if (max > 0) {
             request.form("max", max);
@@ -284,7 +284,7 @@ public class DataSiftHistorics extends DataSiftApiClient {
         FutureData<PreparedHistoricsQuery> future = new FutureData<>();
         URI uri = newParams().forURL(config.newAPIEndpointURI(PREPARE));
         POST request = config.http()
-                .POST(uri, new PageReader(newRequestCallback(future, new PreparedHistoricsQuery(), config)))
+                .POST(uri, new PageReader(newRequestCallback(future, new PreparedHistoricsQuery())))
                 .form("hash", hash)
                 .form("start", start)
                 .form("end", end)

@@ -32,35 +32,43 @@ public class DataSiftApiClient {
         return new ParamBuilder();
     }
 
+    /**
+     * The returned {@link Function2} fulfills the given
+     * {@link FutureData future} with the
+     * {@link io.higgs.http.client.Response response} to an http request.
+     *
+     * @param <T>
+     * @param future the future to fulfill
+     * @param instance the object to receive the http response
+     * @return 
+     */
     protected <T extends DataSiftResult> Function2<String, io.higgs.http.client.Response> newRequestCallback(
-            final FutureData<T> future, final T instance, final DataSiftConfig config) {
-        return new Function2<String, io.higgs.http.client.Response>() {
-            public void apply(String s, io.higgs.http.client.Response response) {
-                T result = instance;
-                if (response.getStatus() != null && HttpResponseStatus.NO_CONTENT.equals(response.getStatus())) {
-                    //if a 204 is returned don't attempt to parse a JSON out of it,
-                    // since there shouldn't be any content as the status implies
-                    result.successful();
-                } else if (response.hasFailed()) {
-                    result.failed(response.failureCause());
-                    throw new DataSiftException("API request failed", response.failureCause(), response);
-                } else {
-                    try {
-                        result = (T) DataSiftClient.MAPPER.readValue(s, instance.getClass());
-                    } catch (IOException e) {
-                        result.failed(e);
-                        throw new JsonParsingException("Unable to decode JSON from DataSift response", e, response);
-                    }
+            final FutureData<T> future, final T instance) {
+        return (String s, io.higgs.http.client.Response response) -> {
+            T result = instance;
+            if (response.getStatus() != null && HttpResponseStatus.NO_CONTENT.equals(response.getStatus())) {
+                //if a 204 is returned don't attempt to parse a JSON out of it,
+                // since there shouldn't be any content as the status implies
+                result.successful();
+            } else if (response.hasFailed()) {
+                result.failed(response.failureCause());
+                throw new DataSiftException("API request failed", response.failureCause(), response);
+            } else {
+                try {
+                    result = (T) DataSiftClient.MAPPER.readValue(s, instance.getClass());
+                } catch (IOException e) {
+                    result.failed(e);
+                    throw new JsonParsingException("Unable to decode JSON from DataSift response", e, response);
                 }
-                result.setResponse(new com.datasift.client.Response(s, response));
-                if (response.getStatus().code() == 401) {
-                    throw new AuthException("Please provide a valid username and API key", response);
-                }
-                if (!result.isSuccessful()) {
-                    throw new DataSiftException(result.getError(), result.failureCause());
-                }
-                future.received(result);
             }
+            result.setResponse(new com.datasift.client.Response(s, response));
+            if (response.getStatus().code() == 401) {
+                throw new AuthException("Please provide a valid username and API key", response);
+            }
+            if (!result.isSuccessful()) {
+                throw new DataSiftException(result.getError(), result.failureCause());
+            }
+            future.received(result);
         };
     }
 

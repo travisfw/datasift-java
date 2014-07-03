@@ -1,11 +1,14 @@
 package com.datasift.client;
 
 /**
+ * A result from an api call.
+ *
  * @author Courtney Robinson <courtney@crlog.info>
  */
 public interface DataSiftResult {
     /**
-     * A response is considered successful if if a response has been received, the response doesn't contain an error
+     * A response is considered successful if if a response has been received, the
+     * response doesn't contain an error
      * message AND the HTTP response status code is 200 to 399 (i.e. OKs or redirects)
      *
      * @return true if this API result was successful.
@@ -14,6 +17,10 @@ public interface DataSiftResult {
 
     Response getResponse();
 
+    /**
+     * set the response object on this {@code DataSiftResult}
+     * @param response that which will now be returned from {@link #getResponse() }
+     */
     void setResponse(Response response);
 
     /**

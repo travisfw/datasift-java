@@ -120,7 +120,7 @@ public class DataSiftClient extends DataSiftApiClient {
     public FutureData<Validation> validate(String csdl) {
         FutureData<Validation> future = new FutureData<Validation>();
         URI uri = newParams().forURL(config.newAPIEndpointURI(VALIDATE));
-        POST request = config.http().POST(uri, new PageReader(newRequestCallback(future, new Validation(), config)))
+        POST request = config.http().POST(uri, new PageReader(newRequestCallback(future, new Validation())))
                 .form("csdl", csdl);
         performRequest(future, request);
         return future;
@@ -137,7 +137,7 @@ public class DataSiftClient extends DataSiftApiClient {
     public FutureData<Stream> compile(String csdl) {
         FutureData<Stream> future = new FutureData<Stream>();
         URI uri = newParams().forURL(config.newAPIEndpointURI(COMPILE));
-        POST request = config.http().POST(uri, new PageReader(newRequestCallback(future, new Stream(), config)))
+        POST request = config.http().POST(uri, new PageReader(newRequestCallback(future, new Stream())))
                 .form("csdl", csdl);
         performRequest(future, request);
         return future;
@@ -149,7 +149,7 @@ public class DataSiftClient extends DataSiftApiClient {
     public FutureData<Balance> balance() {
         FutureData<Balance> future = new FutureData<Balance>();
         URI uri = newParams().forURL(config.newAPIEndpointURI(BALANCE));
-        Request request = config.http().GET(uri, new PageReader(newRequestCallback(future, new Balance(), config)));
+        Request request = config.http().GET(uri, new PageReader(newRequestCallback(future, new Balance())));
         performRequest(future, request);
         return future;
     }
@@ -169,7 +169,7 @@ public class DataSiftClient extends DataSiftApiClient {
         final FutureResponse<Stream> response = new FutureResponse<Stream>() {
             public void apply(Stream stream) {
                 URI uri = newParams().put("hash", stream.hash()).forURL(config.newAPIEndpointURI(DPU));
-                Request request = config.http().GET(uri, new PageReader(newRequestCallback(future, dpu, config)));
+                Request request = config.http().GET(uri, new PageReader(newRequestCallback(future, dpu)));
                 performRequest(future, request);
             }
         };
@@ -200,7 +200,7 @@ public class DataSiftClient extends DataSiftApiClient {
                 period = "day";
         }
         URI uri = newParams().put("period", period).forURL(config.newAPIEndpointURI(USAGE));
-        Request request = config.http().GET(uri, new PageReader(newRequestCallback(future, new Usage(), config)));
+        Request request = config.http().GET(uri, new PageReader(newRequestCallback(future, new Usage())));
         performRequest(future, request);
         return future;
     }
