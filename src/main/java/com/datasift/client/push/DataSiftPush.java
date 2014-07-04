@@ -71,7 +71,8 @@ public class DataSiftPush extends DataSiftApiClient {
     }
 
     /**
-     * Stop/cancel a given push subscription
+     * <a href="http://dev.datasift.com/docs/api/1/pushstop">Stop/cancel</a>
+     * a given push subscription;
      *
      * @param id the id of the push subscription
      * @return the subscription that was stopped
@@ -81,7 +82,7 @@ public class DataSiftPush extends DataSiftApiClient {
     }
 
     /**
-     * Delete a push subsctiption
+     * <a href="http://dev.datasift.com/docs/api/1/pushdelete">Delete</a> a push subscription
      *
      * @param id the id of the subscription to delete
      * @return a DataSiftResult which can be checked for success or failure of the request

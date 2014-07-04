@@ -9,7 +9,7 @@ import com.datasift.client.stream.Interaction;
 public class LastInteraction extends Interaction {
     public static Interaction INSTANCE = new LastInteraction();
 
-    protected LastInteraction() {
+    private LastInteraction() {
         super(DataSiftClient.MAPPER.createObjectNode());
     }
 }
