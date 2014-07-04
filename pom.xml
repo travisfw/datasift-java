@@ -34,6 +34,11 @@
             <name>DataSift</name>
             <email>oss@datasift.com</email>
         </developer>
+        <developer>
+            <id>travisfw</id>
+            <name>Travis Wellman</name>
+            <email>tw@traviswellman.com</email>
+        </developer>
     </developers>
 
     <properties>
