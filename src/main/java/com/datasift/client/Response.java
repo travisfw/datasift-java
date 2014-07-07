@@ -16,7 +16,7 @@ public class Response {
     protected io.higgs.http.client.Response rawResponse;
     protected boolean failed;
     protected Throwable cause;
-    private Map<String, List<String>> headers = new HashMap<String, List<String>>();
+    private final Map<String, List<String>> headers = new HashMap<>();
 
     public Response(String data, io.higgs.http.client.Response rawResponse) {
         this.data = data;

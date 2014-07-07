@@ -3,6 +3,7 @@ package com.datasift.client;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Courtney Robinson <courtney.robinson@datasift.com>
@@ -49,22 +50,35 @@ public class BaseDataSiftResult implements DataSiftResult {
         return isSuccessful() && response.status() != 401;
     }
 
+    /**
+     * {@link #rateLimit() rateLimit}, {@link #rateLimitRemaining() rateLimitRemaining}, and
+     * {@link #rateLimitCost() rateLimitCost} may throw {@link IllegalStateException}, but not if
+     * {@link #isSuccessful()} returns true.
+     *
+     * @return the value of the header X-RateLimit-Limit
+     */
     @Override
-    public int rateLimit() {
-        List<String> limit = response.headers().get("X-RateLimit-Limit");
-        return limit == null || limit.size() == 0 ? DataSiftClient.DEFAULT_NUM : Integer.parseInt(limit.get(0));
+    public Optional<Integer> rateLimit() {
+        return intHeader("X-RateLimit-Limit");
     }
-
+    /** @return the value of the header X-RateLimit-Remaining */
     @Override
-    public int rateLimitRemaining() {
-        List<String> limit = response.headers().get("X-RateLimit-Remaining");
-        return limit == null || limit.size() == 0 ? DataSiftClient.DEFAULT_NUM : Integer.parseInt(limit.get(0));
+    public Optional<Integer> rateLimitRemaining() {
+        return intHeader("X-RateLimit-Remaining");
     }
-
+    /** @return the value of the header X-RateLimit-Cost */
     @Override
-    public int rateLimitCost() {
-        List<String> limit = response.headers().get("X-RateLimit-Cost");
-        return limit == null || limit.size() == 0 ? DataSiftClient.DEFAULT_NUM : Integer.parseInt(limit.get(0));
+    public Optional<Integer> rateLimitCost() {
+        return intHeader("X-RateLimit-Cost");
+    }
+    private Optional<Integer> intHeader(String headerName) {
+        if (response == null)
+            throw new IllegalStateException("response not yet filled");
+        List<String> limit = response.headers().get(headerName);
+        if (limit == null || limit.isEmpty())
+            return Optional.empty();
+        Integer ret = new Integer(limit.get(0));
+        return Optional.of(ret);
     }
 
     @Override
@@ -74,6 +88,7 @@ public class BaseDataSiftResult implements DataSiftResult {
 
     @Override
     public String toString() {
+        if (response == null) return "unfulfilled response";
         return response.toString();
     }
 
